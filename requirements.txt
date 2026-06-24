@@ -2,6 +2,6 @@ Flask
 Gunicorn
 pandas
 numpy
-scikit-learn
+scikit-learn==1.5.1
 xgboost
 joblib
