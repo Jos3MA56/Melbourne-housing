@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predicción de precio de vivienda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <main class="contenedor">
+
+        <section class="card encabezado">
+            <p class="etiqueta">Proyecto de regresión · CRISP-DM</p>
+            <h1>Predicción del precio de una vivienda</h1>
+            <p>
+                Modelo de aprendizaje automático entrenado con datos de viviendas de Melbourne.
+                El objetivo es estimar el precio de una propiedad en dólares australianos a partir
+                de variables relacionadas con sus características y ubicación.
+            </p>
+
+            <div class="info-modelo">
+                <span>Modelo: <strong>{{ mejor_modelo }}</strong></span>
+                <span>Escenario: <strong>{{ mejor_escenario }}</strong></span>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Formulario de predicción</h2>
+            <p>
+                Ingresa los valores originales de la vivienda. El sistema aplicará las transformaciones
+                necesarias y generará una estimación del precio.
+            </p>
+
+            {% if error %}
+                <div class="alerta error">{{ error }}</div>
+            {% endif %}
+
+            {% if prediccion %}
+                <div class="alerta resultado">
+                    Precio estimado: <strong>{{ prediccion }}</strong>
+                </div>
+            {% endif %}
+
+            <form method="POST" action="/" class="formulario">
+
+                <div class="campo">
+                    <label for="Rooms">Habitaciones</label>
+                    <input 
+                        type="number" 
+                        id="Rooms" 
+                        name="Rooms" 
+                        step="1"
+                        min="0"
+                        value="{{ valores.get('Rooms', '') }}"
+                        required
+                    >
+                    <small>Número de habitaciones de la vivienda. Ejemplo: 3</small>
+                </div>
+
+                <div class="campo">
+                    <label for="Type">Tipo de vivienda</label>
+                    <select id="Type" name="Type" required>
+                        <option value="" disabled {% if not valores.get('Type') %}selected{% endif %}>
+                            Selecciona un tipo
+                        </option>
+
+                        <option value="h" {% if valores.get('Type') == 'h' %}selected{% endif %}>
+                            Casa / house
+                        </option>
+
+                        <option value="u" {% if valores.get('Type') == 'u' %}selected{% endif %}>
+                            Departamento / unit
+                        </option>
+
+                        <option value="t" {% if valores.get('Type') == 't' %}selected{% endif %}>
+                            Townhouse
+                        </option>
+                    </select>
+                    <small>Categoría original del dataset: Type</small>
+                </div>
+
+                <div class="campo">
+                    <label for="Distance">Distancia al centro</label>
+                    <input 
+                        type="number" 
+                        id="Distance" 
+                        name="Distance" 
+                        step="0.1"
+                        min="0"
+                        value="{{ valores.get('Distance', '') }}"
+                        required
+                    >
+                    <small>Distancia en kilómetros al centro de Melbourne. Ejemplo: 8.2</small>
+                </div>
+
+                <div class="campo">
+                    <label for="Landsize">Superficie del terreno</label>
+                    <input 
+                        type="number" 
+                        id="Landsize" 
+                        name="Landsize" 
+                        step="0.1"
+                        min="0"
+                        value="{{ valores.get('Landsize', '') }}"
+                        required
+                    >
+                    <small>Área del terreno en metros cuadrados. Ejemplo: 250</small>
+                </div>
+
+                <div class="campo">
+                    <label for="Lattitude">Latitud</label>
+                    <input 
+                        type="number" 
+                        id="Lattitude" 
+                        name="Lattitude" 
+                        step="0.0001"
+                        value="{{ valores.get('Lattitude', '') }}"
+                        required
+                    >
+                    <small>Coordenada geográfica. Ejemplo: -37.80</small>
+                </div>
+
+                <div class="campo">
+                    <label for="Longtitude">Longitud</label>
+                    <input 
+                        type="number" 
+                        id="Longtitude" 
+                        name="Longtitude" 
+                        step="0.0001"
+                        value="{{ valores.get('Longtitude', '') }}"
+                        required
+                    >
+                    <small>Coordenada geográfica. Ejemplo: 144.99</small>
+                </div>
+
+                <button type="submit">Predecir precio</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
